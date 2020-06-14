@@ -1,0 +1,14 @@
+{
+  "name": "pomodoro",
+  "appName": "Pomodoro",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^9.0.2",
+    "timer.js": "^1.0.4"
+  }
+}
