@@ -9,6 +9,7 @@
   "license": "MIT",
   "dependencies": {
     "electron": "^9.0.2",
+    "progressbar.js": "^1.1.0",
     "timer.js": "^1.0.4"
   }
 }

@@ -1,37 +1,42 @@
-const { app, BrowserWindow, Notification, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Notification } = require('electron');
 
-let mainWindow = null;
+let mainWindow;
 
-app.on('ready', () => {
+function handleIPC() {
+  ipcMain.handle('notification', async (_, { body, title, actions, closeButtonText }) => {
+    let actionResult = await new Promise((resolve) => {
+      let notification = new Notification({
+        title,
+        body,
+        actions,
+        closeButtonText,
+      });
+      notification.on('action', function (event) {
+        resolve({ event: 'action' });
+      });
+      notification.on('close', function (event) {
+        resolve({ event: 'close' });
+      });
+      notification.show();
+    });
+    return actionResult;
+  });
+}
+
+function createMainWindow() {
   mainWindow = new BrowserWindow({
-    width: 300,
-    height: 500,
+    width: 250,
+    height: 350,
     webPreferences: {
       nodeIntegration: true,
     },
   });
-
   mainWindow.loadFile('./src/index.html');
-  handleIPC();
-});
 
-function handleIPC() {
-  ipcMain.handle('work.notification', async () => {
-    let res = await new Promise((resolve, reject) => {
-      let notification = new Notification({
-        title: '任务结束',
-        body: '是否开始休息',
-        actions: [{ text: '开始休息', type: 'button' }],
-        closeButtonText: '继续工作',
-      });
-      notification.on('action', () => {
-        resolve('rest');
-      });
-      notification.on('close', () => {
-        resolve('work');
-      });
-      notification.show();
-    });
-    return res;
-  });
+  return mainWindow;
 }
+
+app.whenReady().then(() => {
+  handleIPC();
+  createMainWindow();
+});
