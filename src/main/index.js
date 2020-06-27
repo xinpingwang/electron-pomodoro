@@ -1,4 +1,8 @@
-const { app, BrowserWindow, ipcMain, Notification } = require('electron');
+import { app, BrowserWindow, ipcMain, Notification } from 'electron';
+import * as path from 'path';
+import { format as formatUrl } from 'url';
+
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 let mainWindow;
 
@@ -31,7 +35,18 @@ function createMainWindow() {
       nodeIntegration: true,
     },
   });
-  mainWindow.loadFile('./src/index.html');
+
+  if (isDevelopment) {
+    mainWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+  } else {
+    mainWindow.loadURL(
+      formatUrl({
+        pathname: path.join(__dirname, 'index.html'),
+        protocol: 'file',
+        slashes: true,
+      })
+    );
+  }
 
   return mainWindow;
 }

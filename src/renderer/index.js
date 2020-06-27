@@ -1,6 +1,8 @@
-const { ipcRenderer } = require('electron');
-const ProgressBar = require('progressbar.js/dist/progressbar.js');
-const Timer = require('timer.js');
+import { ipcRenderer } from 'electron';
+import * as ProgressBar from 'progressbar.js/dist/progressbar.js';
+import Timer from 'timer.js';
+
+import './style.css';
 
 let switchButton = document.getElementById('switch-button');
 let progressBar = new ProgressBar.Circle('#timer-container', {

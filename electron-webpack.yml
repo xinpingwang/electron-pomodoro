@@ -1,0 +1,4 @@
+renderer:
+  template: 'src/renderer/index.html'
+
+title: true
