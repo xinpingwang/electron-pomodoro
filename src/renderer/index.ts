@@ -4,7 +4,12 @@ import Timer from 'timer.js';
 
 import './style.css';
 
-let switchButton = document.getElementById('switch-button');
+interface State {
+  type?: number;
+  remainTime: number;
+}
+
+let switchButton = document.getElementById('switch-button') as HTMLButtonElement;
 let progressBar = new ProgressBar.Circle('#timer-container', {
   strokeWidth: 2,
   color: '#F44336',
@@ -35,7 +40,7 @@ function render() {
   }
 }
 
-function setState(_state) {
+function setState(_state: State) {
   Object.assign(state, _state);
   render();
 }
@@ -51,8 +56,8 @@ function startRest() {
 }
 
 const workTimer = new Timer({
-  ontick: (ms) => {
-    setState({ remainTime: (ms / 1000).toFixed(0) });
+  ontick: (ms: number) => {
+    setState({ remainTime: Math.floor(ms / 1000) });
   }, // 每秒更新时间
   onstop: () => {
     setState({ type: 0, remainTime: 0 });
@@ -93,7 +98,21 @@ const workTimer = new Timer({
   },
 });
 
-async function notification({ title, body, actionText, closeButtonText, onclose, onaction }) {
+async function notification({
+  title,
+  body,
+  actionText,
+  closeButtonText,
+  onclose,
+  onaction,
+}: {
+  title: string;
+  body: string;
+  actionText: string;
+  closeButtonText: string;
+  onclose: Function;
+  onaction: Function;
+}) {
   let res = await ipcRenderer.invoke('notification', {
     title,
     body,
@@ -108,10 +127,11 @@ setState({
   type: 0, // 0 开始工作、1 停止工作、2 开始休息、3 停止休息
 });
 
-switchButton.onclick = function () {
-  if (this.innerText === '开始工作') {
+switchButton.onclick = function (e) {
+  let element = e.target as HTMLButtonElement;
+  if (element.innerText === '开始工作') {
     startWork();
-  } else if (this.innerText === '开始休息') {
+  } else if (element.innerText === '开始休息') {
     startRest();
   } else {
     workTimer.stop();
