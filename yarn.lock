@@ -2727,10 +2727,10 @@ electron-webpack@^2.8.2:
     webpack-merge "^4.2.2"
     yargs "^15.3.1"
 
-electron@^9.1.0:
-  version "9.4.3"
-  resolved "https://registry.npm.taobao.org/electron/download/electron-9.4.3.tgz#9fb6c0a900bdf80cc473def9fbcc8c213a9e7e74"
-  integrity sha1-n7bAqQC9+AzEc975+8yMITqefnQ=
+electron@^11.3.0:
+  version "11.3.0"
+  resolved "https://registry.npm.taobao.org/electron/download/electron-11.3.0.tgz#87e8528fd23ae53b0eeb3a738f1fe0a3ad27c2db"
+  integrity sha1-h+hSj9I65TsO6zpzjx/go60nwts=
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^12.0.12"
