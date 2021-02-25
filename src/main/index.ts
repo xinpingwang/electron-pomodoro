@@ -4,7 +4,7 @@ import { format as formatUrl } from 'url';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-let mainWindow;
+let mainWindow: BrowserWindow;
 
 function handleIPC() {
   ipcMain.handle('notification', async (_, { body, title, actions, closeButtonText }) => {
