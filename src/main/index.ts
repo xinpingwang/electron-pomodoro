@@ -1,10 +1,12 @@
-import { app, BrowserWindow, ipcMain, Notification } from 'electron';
+import { app, BrowserWindow, ipcMain, nativeImage, Notification } from 'electron';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
 
+import { TrayApp } from './tray-app';
+
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-let mainWindow: BrowserWindow;
+let tray: TrayApp;
 
 function handleIPC() {
   ipcMain.handle('notification', async (_, { body, title, actions, closeButtonText }) => {
@@ -27,19 +29,22 @@ function handleIPC() {
   });
 }
 
-function createMainWindow() {
-  mainWindow = new BrowserWindow({
+function createTray() {
+  let trayImage = nativeImage.createFromPath(path.join(__dirname, '../assets/images/icon.png'));
+  let trayWindow = new BrowserWindow({
     width: 250,
     height: 350,
+    show: false,
+    frame: false,
     webPreferences: {
       nodeIntegration: true,
     },
   });
 
   if (isDevelopment) {
-    mainWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+    trayWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
   } else {
-    mainWindow.loadURL(
+    trayWindow.loadURL(
       formatUrl({
         pathname: path.join(__dirname, 'index.html'),
         protocol: 'file',
@@ -47,11 +52,19 @@ function createMainWindow() {
       })
     );
   }
-
-  return mainWindow;
+  tray = new TrayApp(trayImage, trayWindow);
 }
 
 app.whenReady().then(() => {
   handleIPC();
-  createMainWindow();
+  createTray();
 });
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    tray.destroy();
+    app.quit();
+  }
+});
+
+app.dock.hide();
